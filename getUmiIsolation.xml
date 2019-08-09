@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tool id="getUmiIsolation" name="Cluster On UMIs:" version="0.1.0">
+    <description>
+        Use a python script to cluster all UMIs and output a tabular file, a
+        BLAST file and a zip file.
+    </description>
+    <!-- Call the getUmiIsolation script, set input parameters according to user
+         choices. -->
+    <command interpreter="bash">
+        getUmiIsolation.sh -o ${fosOutputTabular} -z ${fosOutputZip}
+                          -q ${fosBlastFile} -p ${rbProcess}
+                          -f ${fisInput.rbSingle} -l ${disUmiLength}
+                          -s ${rbSearch} -a ${tfForward} -b ${tfReverse}
+                          -d ${disIdentity}
+        #if $fisInput.rbSingle == "fastq"
+            -i $fisInput.fisSingleFastq
+        #elif $fisInput.rbSingle == "fasta"
+            -i $fisInput.fisSingleFasta
+        #end if
+    </command>
+    <inputs>
+        <!-- Catch the input file. -->
+        <conditional name="fisInput">
+            <param name="rbSingle" type="select" label="FastQ or fastA file."
+                   multiple="false">
+                <option value="fastq" selected="true">FastQ file</option>
+                <option value="fasta">FastA file</option>
+            </param>
+            <when value="fastq">
+                <param name="fisSingleFastq" type="data" format="fastq"
+                       label="FastQ file."/>
+            </when>
+            <when value="fasta">
+                <param name="fisSingleFasta" type="data" format="fasta"
+                       label="FastA file."/>
+            </when>
+        </conditional>
+        <!-- Catch the search approach. -->
+        <param name="rbProcess" type="select"
+               label="Primer, scaffold(adapter) or first position?"
+               multiple="false"
+               help="The tool will use the following format: [Forward_Scaffold(Adapter)]-[Forward_UMI]-[Forward_Primer]--READ--[Reverse_Primer]-[Reverse_UMI]-[Reverse_Scaffold(Adapter)]">
+            <option value="primer" selected="true">Primer search</option>
+            <option value="scaffold">Scaffold(adapter) search</option>
+            <option value="zero">First position search</option>
+        </param>
+        <!-- Catch the number of UMIs per read. -->
+        <param name="rbSearch" type="select"
+               label="Search UMIs at 5'-end [umi5], 3'-end [umi3] or at 5'-end and 3'-end [umidouble]"
+               multiple="false"
+               help="Searching with umi5 instructs the tool to only search for UMI's at the start of every read, searching with umi3 instructs the tool to only search for UMI's at the end of every read, while umidouble will instruct the tool to collect UMI's on both the start and end of every read">
+            <option value="umi5" selected="true">5'-end UMI</option>
+            <option value="umi3">3'-end UMI</option>
+            <option value="umidouble">Two end UMIs</option>
+        </param>
+        <!-- Catch the search nucleotides and length. -->
+        <param name="tfForward" size="50" type="text" value="NNNNNNNNNNNNNNN"
+               label="The 5'-end search nucleotides (UPPERCASE)"/>
+        <param name="tfReverse" size="50" type="text" value="NNNNNNNNNNNNNNN"
+               label="The 3'-end search nucleotides (UPPERCASE)"/>
+        <param name="disUmiLength" type="integer"
+               label="The length of the UMI sequences (INTEGER)" value="0" min="0"
+               help="Enter a integer that represents the length of a single UMI"/>
+        <param name="disIdentity" type="float" value="0.97" min="0.1" max="1"
+               label="The identity percentage with which VSEARCH will cluster isolated reads within a single UMI fasta file"/>
+    </inputs>
+    <outputs>
+        <!-- Catch the output file. -->
+        <data format="tabular" name="fosOutputTabular"
+              label="UMI_Accumulation_Table">
+        </data>
+        <data format="fasta" name="fosBlastFile" label="UMI_Accumulation_BLAST">
+        </data>
+        <data format="zip" name="fosOutputZip" label="UMI_Accumulation_Zip">
+        </data>
+    </outputs>
+    <tests>
+    </tests>
+    <help>
+        .. class:: infomark
+
+        Use a python script to accumulate all UMIs and output a tabular file,
+        a BLAST file and a zip file.
+
+        .. class:: infomark
+
+        The tabular file will contain all unique UMI nucleotides, a count of
+        the number of reads that are associated with that umi and a unique
+        identifier for every UMI.
+
+        .. class:: infomark
+
+        The BLAST file can be used to identify all UMI clusters.
+
+        .. class:: infomark
+
+        The zip file will contain fastA files for every unique UMI and contain
+        reads associated with that UMI, this zip file is created before VSEARCH
+        is used for a final check.
+
+        .. class:: warningmark
+
+        Every read in a fastA file should have a header starting with >.
+        Every read in a fastQ file should have a header starting with @.
+    </help>
+</tool>
