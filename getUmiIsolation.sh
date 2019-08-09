@@ -25,11 +25,11 @@ getFormatFlow() {
     mkdir -p "${strDirectory}_temp"
     mkdir -p "${strDirectory}_clusterCheck"
     getUmiIsolation.py -i ${fisInput} -o ${strDirectory}_temp/flTempCsv.csv \
-                      -z ${strDirectory}_temp/ \
-                      -q ${strDirectory}_temp/flTempBlast.fasta \
-                      -f ${disFormat} -p ${disProcess} -l ${disUmiLength} \
-                      -s ${disSearch} -a ${disForward} -b ${disReverse} \
-                      -c ${strDirectory}_clusterCheck/ -d ${disIdentity}
+                       -z ${strDirectory}_temp/ \
+                       -q ${strDirectory}_temp/flTempBlast.fasta \
+                       -f ${disFormat} -p ${disProcess} -l ${disUmiLength} \
+                       -s ${disSearch} -a ${disForward} -b ${disReverse} \
+                       -c ${strDirectory}_clusterCheck/ -d ${disIdentity}
     cat ${strDirectory}_temp/flTempCsv.csv > ${fosOutputTabular}
     rm ${strDirectory}_temp/flTempCsv.csv
     cat ${strDirectory}_temp/flTempBlast.fasta > ${fosBlastFile}
@@ -91,9 +91,9 @@ while getopts ":i:o:z:q:p:f:l:s:a:b:d:vh" opt; do
         h)
             echo ""
             echo "Usage: getUmiIsolation.sh [-h] [-v] [-i INPUT] [-o TABULAR]"
-            echo "                         [-z ZIP] [-q BLAST] [-p PROCESS]"
-            echo "                         [-f FORMAT] [-l LENGTH] [-s SEARCH]"
-            echo "                         [-a FORWARD] [-b REVERSE]"
+            echo "                          [-z ZIP] [-q BLAST] [-p PROCESS]"
+            echo "                          [-f FORMAT] [-l LENGTH] [-s SEARCH]"
+            echo "                          [-a FORWARD] [-b REVERSE]"
             echo ""
             echo "Optional arguments:"
             echo " -h                    Show this help page and exit"

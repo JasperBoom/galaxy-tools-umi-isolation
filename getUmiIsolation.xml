@@ -8,10 +8,10 @@
          choices. -->
     <command interpreter="bash">
         getUmiIsolation.sh -o ${fosOutputTabular} -z ${fosOutputZip}
-                          -q ${fosBlastFile} -p ${rbProcess}
-                          -f ${fisInput.rbSingle} -l ${disUmiLength}
-                          -s ${rbSearch} -a ${tfForward} -b ${tfReverse}
-                          -d ${disIdentity}
+                           -q ${fosBlastFile} -p ${rbProcess}
+                           -f ${fisInput.rbSingle} -l ${disUmiLength}
+                           -s ${rbSearch} -a ${tfForward} -b ${tfReverse}
+                           -d ${disIdentity}
         #if $fisInput.rbSingle == "fastq"
             -i $fisInput.fisSingleFastq
         #elif $fisInput.rbSingle == "fasta"
