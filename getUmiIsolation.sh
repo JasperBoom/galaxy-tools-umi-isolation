@@ -13,8 +13,6 @@
 # - sudo ./autogen.sh
 # - sudo ./configure && sudo make && sudo make install
 
-# python3 /home/jboom1/Temp/galaxy-tools-umi-isolation/
-
 # The getFormatFlow function.
 # This function creates two temporary storage directories in the output directory.
 # It then calls the getUmiIsolation.py script with the correct input values.
