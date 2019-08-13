@@ -13,6 +13,8 @@
 # - sudo ./autogen.sh
 # - sudo ./configure && sudo make && sudo make install
 
+# python3 /home/jboom1/Temp/galaxy-tools-umi-isolation/
+
 # The getFormatFlow function.
 # This function creates two temporary storage directories in the output directory.
 # It then calls the getUmiIsolation.py script with the correct input values.
@@ -21,7 +23,7 @@
 # A zip file is created of the generated preVSEARCH fastA file and copied to
 # the expected location. After that the temporary storage directories are removed.
 getFormatFlow() {
-    strDirectory=${fosOutput::-4}
+    strDirectory=${fosOutputTabular::-4}
     mkdir -p "${strDirectory}_temp"
     mkdir -p "${strDirectory}_clusterCheck"
     getUmiIsolation.py -i ${fisInput} -o ${strDirectory}_temp/flTempCsv.csv \
@@ -29,12 +31,15 @@ getFormatFlow() {
                        -q ${strDirectory}_temp/flTempBlast.fasta \
                        -f ${disFormat} -p ${disProcess} -l ${disUmiLength} \
                        -s ${disSearch} -a ${disForward} -b ${disReverse} \
-                       -c ${strDirectory}_clusterCheck/ -d ${disIdentity}
+                       -c ${strDirectory}_clusterCheck/ -d ${disIdentity} \
+                       -u ${disAbundance}
     cat ${strDirectory}_temp/flTempCsv.csv > ${fosOutputTabular}
     rm ${strDirectory}_temp/flTempCsv.csv
     cat ${strDirectory}_temp/flTempBlast.fasta > ${fosBlastFile}
     rm ${strDirectory}_temp/flTempBlast.fasta
-    zip -jqr ${strDirectory}_temp/flTempZip.zip ${strDirectory}_temp/*
+    find ${strDirectory}_temp/ -name "derep*" -delete
+    find ${strDirectory}_temp/ -name "sorted*" -delete
+    find ${strDirectory}_temp/ -name "UMI#*" -print | zip -jqr ${strDirectory}_temp/flTempZip.zip -@
     cat ${strDirectory}_temp/flTempZip.zip > ${fosOutputZip}
     rm -rf ${strDirectory}_temp
     rm -rf ${strDirectory}_clusterCheck
@@ -46,7 +51,7 @@ main() {
 }
 
 # The getopts function.
-while getopts ":i:o:z:q:p:f:l:s:a:b:d:vh" opt; do
+while getopts ":i:o:z:q:p:f:l:s:a:b:d:u:vh" opt; do
     case ${opt} in
         i)
             fisInput=${OPTARG}
@@ -80,6 +85,9 @@ while getopts ":i:o:z:q:p:f:l:s:a:b:d:vh" opt; do
             ;;
         d)
             disIdentity=${OPTARG}
+            ;;
+        u)
+            disAbundance=${OPTARG}
             ;;
         v)
             echo ""
@@ -115,6 +123,9 @@ while getopts ":i:o:z:q:p:f:l:s:a:b:d:vh" opt; do
             echo " -b                    The 3'-end search nucleotides"
             echo " -d                    The identity percentage with which to"
             echo "                       perform the final VSEARCH check"
+            echo " -u                    The minimum abundance a read has to be"
+            echo "                       order to be part of the final VSEARCH"
+            echo "                       check present in"
             echo ""
             echo "Use a python script to accumulate all UMIs and output a"
             echo "tabular file, a BLAST file and a zip file. The tabular file"
@@ -155,3 +166,5 @@ main
 #
 # Files in fastA format should always have a .fasta extension.
 # Files in fastQ format should always have a .fastq extension.
+# Every read in a fastA/fastQ file should be on one line. For instance they can
+# not be "human readable" and have a \n after every 80 characters.

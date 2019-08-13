@@ -71,21 +71,56 @@ def setOutputFiles(strClusterDir, flBlast, flTabular):
     dfOutput = dfOutput.set_index("UMI ID")
     dfOutput.to_csv(flTabular, sep="\t", encoding="utf-8")
 
-# The getVSEARCH function.
+# The getVSEARCHclusterSize function.
 # This function controls the VSEARCH clustering. Every fasta file created by
-# getFastaFiles is clustered using VSEARCH. The expected result is a single
+# getVSEARCHsortBySize is clustered using VSEARCH. The expected result is a single
 # centroid sequence. This is checked in the setOutputFiles function.
-def getVSEARCH(strClusterDir, flZip, strIdentity):
+def getVSEARCHclusterSize(flZip, strClusterDir, strIdentity):
+    for strFileName in os.listdir(flZip):
+        if strFileName.startswith("sorted"):
+            strInputCommand = flZip + strFileName
+            strOutputCommand = strClusterDir + strFileName[11:]
+            rafVSEARCHcluster = sp.Popen(["vsearch", "--cluster_size", strInputCommand,
+                                          "--fasta_width", "0", "--id", strIdentity,
+                                          "--sizein", "--minseqlength", "1",
+                                          "--centroids", strOutputCommand,
+                                          "--sizeout"], stdout=sp.PIPE, stderr=sp.PIPE)
+            strOut, strError = rafVSEARCHcluster.communicate()
+        else:
+            pass
+                                          
+# The getVSEARCHsortBySize function.
+# This function controls the VSEARCH sorting. Every fasta file created by
+# getVSEARCHderep is sorted based on abundance. Any reads with a abundance lower
+# than strMinSizeAbundance will be discarded.
+def getVSEARCHsortBySize(flZip, strMinSizeAbundance):
+    for strFileName in os.listdir(flZip):
+        if strFileName.startswith("derep"):
+            strInputCommand = flZip + strFileName
+            strOutputCommand = flZip + "sorted" + strFileName
+            rafVSEARCHsort = sp.Popen(["vsearch", "--sortbysize", strInputCommand,
+                                       "--output", strOutputCommand, "--minseqlength",
+                                       "1", "--minsize", strMinSizeAbundance],
+                                       stdout=sp.PIPE, stderr=sp.PIPE)
+            strOut, strError = rafVSEARCHsort.communicate()
+        else:
+            pass
+
+# The getVSEARCHderep function.
+# This function controls the VSEARCH dereplication. Every fasta file created by
+# getFastaFiles is dereplicated. This step is necessary for the sorting step to
+# work.
+def getVSEARCHderep(flZip):
     for strFileName in os.listdir(flZip):
         if strFileName.endswith(".fasta"):
             strInputCommand = flZip + strFileName
-            strOutputCommand = strClusterDir + strFileName
-            rafVSEARCH = sp.Popen(["vsearch", "--fasta_width", "0",
-                                   "--cluster_size", strInputCommand,
-                                   "--centroids", strOutputCommand, "--id", 
-                                   strIdentity, "--sizeout"], stdout=sp.PIPE,
-                                   stderr=sp.PIPE)
-            strOut, strError = rafVSEARCH.communicate()
+            strOutputCommand = flZip + "derep" + strFileName
+            rafVSEARCHderep = sp.Popen(["vsearch", "--derep_fulllength",
+                                        strInputCommand, "--output", strOutputCommand,
+                                        "--minseqlength", "1", "--sizeout"],
+                                        stdout=sp.PIPE, stderr=sp.PIPE)
+
+            strOut, strError = rafVSEARCHderep.communicate()
         else:
             pass
 
@@ -283,7 +318,8 @@ def getUmiCode(strRead, strProcess, intUmiLength, strSearch, strForward,
 # getVSEARCH and setOutputFiles functions are called.
 def getUmiCollection(flInput, strClusterDir, flTabular, flZip, flBlast,
                      strProcess, intUmiLength, strSearch, strForward,
-                     strReverse, strFormat, strOperand, strIdentity):
+                     strReverse, strFormat, strOperand, strIdentity,
+                     strMinSizeAbundance):
     dicUniqueUmi = {}
     dicUniqueUmiCount = {}
     intNoUmiInReadCount = 0
@@ -323,7 +359,9 @@ def getUmiCollection(flInput, strClusterDir, flTabular, flZip, flBlast,
                                   flZip)
                 except UnboundLocalError:
                     pass
-    getVSEARCH(strClusterDir, flZip, strIdentity)
+    getVSEARCHderep(flZip)
+    getVSEARCHsortBySize(flZip, strMinSizeAbundance)
+    getVSEARCHclusterSize(flZip, strClusterDir, strIdentity)
     setOutputFiles(strClusterDir, flBlast, flTabular)
 
 # The setFormat function.
@@ -331,7 +369,7 @@ def getUmiCollection(flInput, strClusterDir, flTabular, flZip, flBlast,
 # input file format. It then calls the getUmiCollection function.
 def setFormat(flInput, strClusterDir, flTabular, flZip, flBlast, strProcess,
               strFormat, intUmiLength, strSearch, strForward, strReverse,
-              strIdentity):
+              strIdentity, strMinSizeAbundance):
     if strFormat == "fasta":
         strOperand = ">"
     elif strFormat == "fastq":
@@ -340,7 +378,8 @@ def setFormat(flInput, strClusterDir, flTabular, flZip, flBlast, strProcess,
         pass
     getUmiCollection(flInput, strClusterDir, flTabular, flZip, flBlast,
                      strProcess, intUmiLength, strSearch, strForward,
-                     strReverse, strFormat, strOperand, str(strIdentity))
+                     strReverse, strFormat, strOperand, str(strIdentity),
+                     str(strMinSizeAbundance))
 
 # The argvs function.
 def parseArgvs():
@@ -375,6 +414,9 @@ def parseArgvs():
     parser.add_argument("-d", action="store", dest="disIdentity",
                         help="The identity percentage with which to perform the\
                               final VSEARCH check")
+    parser.add_argument("-u", action="store", dest="disAbundance",
+                        help="The minimum abundance a read has to be present in\
+                              order to be part of the final VSEARCH check")
     argvs = parser.parse_args()
     return argvs
 
@@ -384,7 +426,8 @@ def main():
     setFormat(argvs.fisInput, argvs.fosClusterDirectory, argvs.fosOutput,
               argvs.fosOutputZip, argvs.fosBlastFile, argvs.disProcess,
               argvs.disFormat, argvs.disUmiLength, argvs.disSearch,
-              argvs.disForward, argvs.disReverse, argvs.disIdentity)
+              argvs.disForward, argvs.disReverse, argvs.disIdentity,
+              argvs.disAbundance)
 
 if __name__ == "__main__":
     main()

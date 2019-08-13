@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<tool id="getUmiIsolation" name="Cluster On UMIs:" version="0.1.0">
+<tool id="getUmiIsolation" name="Cluster On UMIs" version="0.1.0">
     <description>
         Use a python script to cluster all UMIs and output a tabular file, a
         BLAST file and a zip file.
@@ -11,7 +11,7 @@
                            -q ${fosBlastFile} -p ${rbProcess}
                            -f ${fisInput.rbSingle} -l ${disUmiLength}
                            -s ${rbSearch} -a ${tfForward} -b ${tfReverse}
-                           -d ${disIdentity}
+                           -d ${disIdentity} -u ${disAbundance}
         #if $fisInput.rbSingle == "fastq"
             -i $fisInput.fisSingleFastq
         #elif $fisInput.rbSingle == "fasta"
@@ -61,6 +61,7 @@
         <param name="disUmiLength" type="integer"
                label="The length of the UMI sequences (INTEGER)" value="0" min="0"
                help="Enter a integer that represents the length of a single UMI"/>
+        <param name="disAbundance" type="integer" label="The minimum abundance with which a read needs to be present in order to not be discarded" value="1" min="1" />
         <param name="disIdentity" type="float" value="0.97" min="0.1" max="1"
                label="The identity percentage with which VSEARCH will cluster isolated reads within a single UMI fasta file"/>
     </inputs>
@@ -102,5 +103,8 @@
 
         Every read in a fastA file should have a header starting with >.
         Every read in a fastQ file should have a header starting with @.
+        Every read in a fastA/fastQ file should be on one line. For instance
+        they can not be "human readable" and have a "\\n" after every 80 characters.
+        
     </help>
 </tool>
