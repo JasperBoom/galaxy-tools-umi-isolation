@@ -14,4 +14,4 @@ This tool was isolated from the main repository for easy installation purposes.
 
 ## Citation
 * __Boom J__, galaxy-tools-naturalis-internship. 2018-2019.  
-  GitHub repository: https://github.com/JasperBoom/galaxy-tools-naturalis-internship
+  GitHub repository: https://github.com/JasperBoom/galaxy-tools-umi-isolation
