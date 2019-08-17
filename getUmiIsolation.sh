@@ -21,16 +21,20 @@
 # A zip file is created of the generated preVSEARCH fastA file and copied to
 # the expected location. After that the temporary storage directories are removed.
 getFormatFlow() {
-    strDirectory=${fosOutputTabular::-4}
+    strScriptDir=$(dirname "$(readlink -f "$0")")
+    strDirectory=$(mktemp -d /media/GalaxyData/database/files/XXXXXX)
     mkdir -p "${strDirectory}_temp"
     mkdir -p "${strDirectory}_clusterCheck"
-    getUmiIsolation.py -i ${fisInput} -o ${strDirectory}_temp/flTempCsv.csv \
-                       -z ${strDirectory}_temp/ \
-                       -q ${strDirectory}_temp/flTempBlast.fasta \
-                       -f ${disFormat} -p ${disProcess} -l ${disUmiLength} \
-                       -s ${disSearch} -a ${disForward} -b ${disReverse} \
-                       -c ${strDirectory}_clusterCheck/ -d ${disIdentity} \
-                       -u ${disAbundance}
+    python3 $strScriptDir"/getUmiIsolation.py" -i ${fisInput} \
+                                               -o ${strDirectory}_temp/flTempCsv.csv \
+                                               -z ${strDirectory}_temp/ \
+                                               -q ${strDirectory}_temp/flTempBlast.fasta \
+                                               -f ${disFormat} -p ${disProcess} \
+                                               -l ${disUmiLength} -s ${disSearch} \
+                                               -a ${disForward} -b ${disReverse} \
+                                               -c ${strDirectory}_clusterCheck/ \
+                                               -d ${disIdentity} \
+                                               -u ${disAbundance}
     cat ${strDirectory}_temp/flTempCsv.csv > ${fosOutputTabular}
     rm ${strDirectory}_temp/flTempCsv.csv
     cat ${strDirectory}_temp/flTempBlast.fasta > ${fosBlastFile}

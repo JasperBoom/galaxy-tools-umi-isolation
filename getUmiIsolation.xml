@@ -10,18 +10,24 @@
     </requirements>
     <!-- Call the getUmiIsolation script, set input parameters according to user
          choices. -->
-    <command interpreter="bash">
-        getUmiIsolation.sh -o ${fosOutputTabular} -z ${fosOutputZip}
-                           -q ${fosBlastFile} -p ${rbProcess}
-                           -f ${fisInput.rbSingle} -l ${disUmiLength}
-                           -s ${rbSearch} -a ${tfForward} -b ${tfReverse}
-                           -d ${disIdentity} -u ${disAbundance}
+    <command><![CDATA[
+        bash "$__tool_directory__/getUmiIsolation.sh" -o ${fosOutputTabular}
+                                                      -z ${fosOutputZip}
+                                                      -q ${fosBlastFile}
+                                                      -p ${rbProcess}
+                                                      -f ${fisInput.rbSingle}
+                                                      -l ${disUmiLength}
+                                                      -s ${rbSearch}
+                                                      -a ${tfForward}
+                                                      -b ${tfReverse}
+                                                      -d ${disIdentity}
+                                                      -u ${disAbundance}
         #if $fisInput.rbSingle == "fastq"
             -i $fisInput.fisSingleFastq
         #elif $fisInput.rbSingle == "fasta"
             -i $fisInput.fisSingleFasta
         #end if
-    </command>
+    ]]></command>
     <inputs>
         <!-- Catch the input file. -->
         <conditional name="fisInput">
