@@ -356,7 +356,7 @@ def getUmiCollection(flInput, strClusterDir, flTabular, flZip, flBlast,
                 try:
                     if strCode != None:
                         getFastaFiles(strHeader, strRead, strCode, dicUniqueUmi,
-                                  flZip)
+                                      flZip)
                     else:
                         pass
                 except UnboundLocalError:
