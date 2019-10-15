@@ -321,7 +321,6 @@ def getUmiCollection(flInput, strClusterDir, flTabular, flZip, flBlast,
                      strReverse, strFormat, strOperand, strIdentity,
                      strMinSizeAbundance):
     dicUniqueUmi = {}
-    dicUniqueUmiCount = {}
     intNoUmiInReadCount = 0
     intUniqueUmi = 1
     with open(flInput) as oisInput:
@@ -355,10 +354,15 @@ def getUmiCollection(flInput, strClusterDir, flTabular, flZip, flBlast,
                 except UnboundLocalError:
                     pass
                 try:
-                    getFastaFiles(strHeader, strRead, strCode, dicUniqueUmi,
+                    if strCode != None:
+                        getFastaFiles(strHeader, strRead, strCode, dicUniqueUmi,
                                   flZip)
+                    else:
+                        pass
                 except UnboundLocalError:
                     pass
+            strUmiCode = None
+            strCode = None
     getVSEARCHderep(flZip)
     getVSEARCHsortBySize(flZip, strMinSizeAbundance)
     getVSEARCHclusterSize(flZip, strClusterDir, strIdentity)
