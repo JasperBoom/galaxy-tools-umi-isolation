@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
-# Copyright (C) 2018 Jasper Boom (jboom@infernum.nl)
+# -----------------------------------------------------------------------------
+# Naturalis internship repository for UMI isolation tool.
+# Copyright (C) 2019 Jasper Boom
 
 # This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License version 3 as 
-# published by the Free Software Foundation.
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
 
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,6 +16,9 @@
 
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+# Contact information: info@jboom.org.
+# -----------------------------------------------------------------------------
 
 # Prequisites:
 # - sudo apt-get install python3
@@ -176,7 +182,6 @@ main
 
 # Additional information:
 # =======================
-#
 # Files in fastA format should always have a .fasta extension.
 # Files in fastQ format should always have a .fastq extension.
 # Every read in a fastA/fastQ file should be on one line. For instance they can
