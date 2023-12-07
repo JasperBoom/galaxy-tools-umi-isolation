@@ -21,4 +21,5 @@ Contact information: info@jboom.org.
 
 ## Develop
 + Isolate the script(s) from the main repository.
-+ Update license and formatting of all files.
++ Update license and formatting of all files except for the scripts.
++ Update naming and formatting in scripts.

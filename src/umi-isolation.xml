@@ -32,17 +32,18 @@ Contact information: info@jboom.org.
     <!-- Call the umi-isolation script, set input parameters according to user
          choices. -->
     <command><![CDATA[
-        bash "$__tool_directory__/umi-isolation.sh" -o ${output_tabular}
-                                                    -z ${output_zip}
-                                                    -q ${blast_file}
-                                                    -p ${process}
-                                                    -f ${input.single}
-                                                    -l ${umi_length}
-                                                    -s ${search_method}
-                                                    -a ${forward}
-                                                    -b ${reverse}
-                                                    -d ${identity_score}
-                                                    -u ${abundance_score}
+        bash "$__tool_directory__/umi-isolation.sh" \
+            -o ${output_tabular} \
+            -z ${output_zip} \
+            -q ${blast_file} \
+            -p ${process} \
+            -f ${input.single} \
+            -l ${umi_length} \
+            -s ${search_method} \
+            -a ${forward} \
+            -b ${reverse} \
+            -d ${identity_score} \
+            -u ${abundance_score}
         #if $input.single == "fastq"
             -i $input.single_fastq
         #elif $input.single == "fasta"
