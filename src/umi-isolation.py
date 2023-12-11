@@ -353,6 +353,7 @@ def create_reverse_complement(line):
         line_list[position] = complement_codes_dictionary[line_list[position]]
     return "".join(line_list)
 
+
 def generate_regex(line):
     """
     The generate_regex function:
@@ -440,6 +441,7 @@ def get_umi_code(read, process, umi_length, search_method, forward, reverse):
     else:
         pass
 
+
 def get_umi_collection(
     input_file,
     cluster_directory,
@@ -508,7 +510,11 @@ def get_umi_collection(
                 try:
                     if umi_code != None:
                         get_fasta_files(
-                            header, read, umi_code, unique_umi_dictionary, zip_file
+                            header,
+                            read,
+                            umi_code,
+                            unique_umi_dictionary,
+                            zip_file,
                         )
                     else:
                         pass
@@ -521,12 +527,8 @@ def get_umi_collection(
     get_vsearch_cluster_size(zip_file, cluster_directory, identity_score)
     create_output_files(cluster_directory, output_blast_file, tabular_file)
 
+
 def set_format(
-    """
-    The set_format function:
-        This function specifies the first character of the read headers based
-        on the input file format. It then calls the get_umi_collection function.
-    """
     input_file,
     cluster_directory,
     tabular_file,
@@ -541,6 +543,11 @@ def set_format(
     identity_score,
     minimal_size_abundance,
 ):
+    """
+    The set_format function:
+        This function specifies the first character of the read headers based
+        on the input file format. It then calls the get_umi_collection function.
+    """
     if format_string == "fasta":
         operand = ">"
     elif format_string == "fastq":

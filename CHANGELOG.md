@@ -23,3 +23,4 @@ Contact information: info@jboom.org.
 + Isolate the script(s) from the main repository.
 + Update license and formatting of all files except for the scripts.
 + Update naming and formatting in scripts.
++ Apply Black formatting to the python script.
