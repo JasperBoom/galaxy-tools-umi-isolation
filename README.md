@@ -1,5 +1,7 @@
 # Galaxy Tool For UMI Isolation At Naturalis
-A description and further text about this specific tool can be found on the main repository [here](https://github.com/JasperBoom/galaxy-tools-naturalis-internship).  
+A description and further text about this specific tool can be found on the
+main repository
+[here](https://github.com/JasperBoom/galaxy-tools-naturalis-internship).  
 This tool was isolated from the main repository for easy installation purposes.
 
 ## Source(s)

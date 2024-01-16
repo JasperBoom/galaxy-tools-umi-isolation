@@ -31,10 +31,10 @@ import subprocess as sp
 def create_output_files(cluster_directory, output_blast_file, tabular_file):
     """
     The create_output_files function:
-        This function creates the tabular and BLAST output files.
+        This function creates the tabular and blast output files.
     """
     output = pd.DataFrame(
-        columns=["UMI ID", "UMI SEQ", "Read Count", "Centroid Read"]
+        columns=["UMI ID", "UMI SEQ", "READ COUNT", "CENTROID READ"]
     )
     count = 0
     for file_name in os.listdir(cluster_directory):
@@ -91,8 +91,8 @@ def create_output_files(cluster_directory, output_blast_file, tabular_file):
 def get_vsearch_cluster_size(zip_file, cluster_directory, identity_score):
     """
     The get_vsearch_cluster_size function:
-        This function controls the VSEARCH clustering. Every fasta file created
-        by get_vsearch_sort_by_size is clustered using VSEARCH. The expected
+        This function controls the vsearch clustering. Every fasta file created
+        by get_vsearch_sort_by_size is clustered using vsearch. The expected
         result is a single centroid sequence. This is checked in the
         create_output_files function.
     """
@@ -127,7 +127,7 @@ def get_vsearch_cluster_size(zip_file, cluster_directory, identity_score):
 def get_vsearch_sort_by_size(zip_file, minimal_size_abundance):
     """
     The get_vsearch_sort_by_size function:
-        This function controls the VSEARCH sorting. Every fasta file created by
+        This function controls the vsearch sorting. Every fasta file created by
         get_vsearch_derep is sorted based on abundance. Any reads with a
         abundance lower than minimal_size_abundance will be discarded.
     """
@@ -158,7 +158,7 @@ def get_vsearch_sort_by_size(zip_file, minimal_size_abundance):
 def get_vsearch_derep(zip_file):
     """
     The get_vsearch_derep function:
-        This function controls the VSEARCH dereplication. Every fasta file
+        This function controls the vsearch dereplication. Every fasta file
         created by get_fasta_files is dereplicated. This step is necessary for
         the sorting step to work.
     """
@@ -189,8 +189,8 @@ def get_vsearch_derep(zip_file):
 def get_fasta_files(header, read, umi_code, unique_umi_dictionary, zip_file):
     """
     The get_fasta_files function:
-        This function creates separate fasta files for every unique UMI. The
-        function creates a unique name for every UMI file and combines that
+        This function creates separate fasta files for every unique umi. The
+        function creates a unique name for every umi file and combines that
         with the desired output path. A file is opened or created based on this
         combination. The read header and the read itself are appended to it.
     """
@@ -212,8 +212,8 @@ def get_target_zero(read, umi_length, search_method, forward, reverse):
     The get_target_zero function:
         This function checks if both the forward and reverse primer can be
         found, if that succeeds, the forward or reverse (when working with
-        single UMIs) or forward and reverse (when working with double UMIs)
-        nucleotides are isolated based on the length of the UMI. This isolation
+        single umis) or forward and reverse (when working with double umis)
+        nucleotides are isolated based on the length of the umi. This isolation
         is done from the first nucleotide at the 5'-end of a read and the last
         nucleotide at the 3'-end of a read.
     """
@@ -239,14 +239,14 @@ def get_target_front(read, umi_length, search_method, forward, reverse):
     """
     The get_target_front function:
         This function searches for a regex string in the provided read. It will
-        isolate either a forward or reverse UMI or double UMIs. The isolation
+        isolate either a forward or reverse umi or double umis. The isolation
         is based on this read structure
         SCAFFOLDF-UMI-PRIMERF-PRODUCT-PRIMERR-UMI-SCAFFOLDR. When looking for
-        the forward UMI, the last position of SCAFFOLDF is used, when looking
-        for the reverse UMI, the first position of SCAFFOLDR is used, when
-        looking for double UMIs both positions are used. The mentioned
-        positions + or - the UMI length result in a UMI code. When not
-        searching for both UMIs a check needs to be passed, this check makes
+        the forward umi, the last position of SCAFFOLDF is used, when looking
+        for the reverse umi, the first position of SCAFFOLDR is used, when
+        looking for double umis both positions are used. The mentioned
+        positions + or - the umi length result in a umi code. When not
+        searching for both umis a check needs to be passed, this check makes
         sure the reverse scaffold (in the case of umi5) or the forward
         scaffold (in the case of umi3) are present.
     """
@@ -284,13 +284,13 @@ def get_target_behind(read, umi_length, search_method, forward, reverse):
     """
     The get_target_behind function:
         This function searches for a regex string in the provided read. It will
-        isolate either a forward or reverse UMI or double UMIs. The isolation
+        isolate either a forward or reverse umi or double umis. The isolation
         is based on this read structure UMI-PRIMERF-PRODUCT-PRIMERR-UMI. When
-        looking for the forward UMI, the first position of PRIMERF is used,
-        when looking for the reverse UMI, the last position of PRIMERR is used,
-        when looking for double UMIs both positions are used. The mentioned
-        positions + or - the UMI length result in a UMI code. When not
-        searching for both UMIs a check needs to be passed, this check makes
+        looking for the forward umi, the first position of PRIMERF is used,
+        when looking for the reverse umi, the last position of PRIMERR is used,
+        when looking for double umis both positions are used. The mentioned
+        positions + or - the umi length result in a umi code. When not
+        searching for both umis a check needs to be passed, this check makes
         sure the reverse primer (in the case of umi5) or the forward primer
         (in the case of umi3) are present.
     """
@@ -358,7 +358,7 @@ def generate_regex(line):
     """
     The generate_regex function:
         This function creates a regex string using a sequence as input. This
-        regex string is based on the IUPAC ambiguity codes. The function loops
+        regex string is based on the iupac ambiguity codes. The function loops
         through a list version of the sequence and checks per character if it
         is a ambiguous character, and changes it into regex code if so. It then
         returns a joined string.
@@ -462,10 +462,10 @@ def get_umi_collection(
     The get_umi_collection function:
         This function opens the input file and loops through it. It isolates the
         read headers and reads. For every read the get_umi_code function is
-        called which outputs one or two UMIs. In the case of a double UMI
-        search [umidouble] the two UMIs are put together. For every read that
-        contains a UMI the get_fasta_files function is called. After all reads
-        have been processed, the VSEARCH and create_output_files functions
+        called which outputs one or two umis. In the case of a double umi
+        search [umidouble] the two umis are put together. For every read that
+        contains a umi the get_fasta_files function is called. After all reads
+        have been processed, the vsearch and create_output_files functions
         are called.
     """
     unique_umi_dictionary = {}
@@ -578,91 +578,97 @@ def parse_argvs():
         This function handles all positional arguments that the script accepts,
         including version and help pages.
     """
+    description = "A python script to accumulate all umis and output a\
+                 tabular file, a blast file and a zip file."
+    epilog = "This python script has two dependency: pandas & vsearch"
     parser = argparse.ArgumentParser(
-        description="Use a python script to accumulate all UMIs and output a\
-                     tabular file, a BLAST file and a zip file."
+        description=description,
+        epilog=epilog,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("-v", action="version", version="%(prog)s [0.1.0]")
     parser.add_argument(
         "-i",
         action="store",
         dest="input_file",
-        help="The location of the input file(s)",
+        help="The location of the input file(s).",
     )
     parser.add_argument(
         "-c",
         action="store",
         dest="cluster_directory",
-        help="The location of the clustering output file(s)",
+        help="The location of the clustering output file(s).",
     )
     parser.add_argument(
         "-o",
         action="store",
         dest="output_tabular_file",
-        help="The location of the tabular output file(s)",
+        help="The location of the tabular output file(s).",
     )
     parser.add_argument(
         "-z",
         action="store",
         dest="output_zip_file",
-        help="The location of the pre-vsearch zip output file(s)",
+        help="The location of the pre-vsearch zip output file(s).",
     )
     parser.add_argument(
         "-q",
         action="store",
         dest="output_blast_file",
-        help="The location of the BLAST output file(s)",
+        help="The location of the blast output file(s).",
     )
     parser.add_argument(
         "-p",
         action="store",
         dest="process",
-        help="The UMI search approach [primer/scaffold(adapter)/zero]",
+        help="The umi search approach [primer/scaffold(adapter)/zero].",
     )
     parser.add_argument(
         "-f",
         action="store",
         dest="format",
-        help="The format of the input file(s) [fasta/fastq]",
+        help="The format of the input file(s) [fasta/fastq].",
     )
     parser.add_argument(
         "-l",
         action="store",
         dest="umi_length",
-        help="The length of the UMI sequences",
+        help="The length of the umi sequences.",
     )
     parser.add_argument(
         "-s",
         action="store",
         dest="search_method",
-        help="Search UMIs at 5'-end [umi5], 3'-end [umi3] or at 5'-end and\
-              3'-end [umidouble]",
+        help="Search umis at 5'-end [umi5], 3'-end [umi3] or at 5'-end and\
+              3'-end [umidouble].",
     )
     parser.add_argument(
         "-a",
         action="store",
         dest="forward",
-        help="The 5'-end search nucleotides",
+        help="The 5'-end search nucleotides.",
     )
     parser.add_argument(
         "-b",
         action="store",
         dest="reverse",
-        help="The 3'-end search nucleotides",
+        help="The 3'-end search nucleotides.",
     )
     parser.add_argument(
         "-d",
         action="store",
         dest="identity_score",
-        help="The identity percentage with which to perform the final VSEARCH\
-              check",
+        help="The identity percentage with which to perform the final vsearch\
+              check.",
     )
     parser.add_argument(
         "-u",
         action="store",
         dest="abundance",
         help="The minimum abundance a read has to be present in order to be\
-              part of the final VSEARCH check",
+              part of the final vsearch check.",
+    )
+    parser.add_argument(
+        "-v", "--version", action="version", version="%(prog)s [1.0]]"
     )
     argvs = parser.parse_args()
     return argvs

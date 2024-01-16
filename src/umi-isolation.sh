@@ -25,9 +25,9 @@ format_flow() {
     #     This function creates two temporary storage directories in the output
     #     directory. It then calls the umi-isolation.py script with the correct
     #     input values. The output tabular file is copied to the expected
-    #     location and removed. The output BLAST file is copies to the expected
+    #     location and removed. The output blast file is copies to the expected
     #     location and removed. A zip file is created of the generated
-    #     preVSEARCH fastA file and copied to the expected location. After that
+    #     prevsearch fasta file and copied to the expected location. After that
     #     the temporary storage directories are removed.
     script_directory=$(dirname "$(readlink -f "$0")")
     directory_name=$(mktemp -d /media/GalaxyData/database/files/XXXXXX)
@@ -74,7 +74,7 @@ format_flow() {
 
 main() {
     # The main function.
-    #     This function calls the main python program guide function.
+    #     This function calls all processing functions in correct order.
     format_flow
 }
 
@@ -139,30 +139,31 @@ do
             echo " -v          Show the software's version number and exit"
             echo " -i          The location of the input file(s)"
             echo " -o          The location of the tabular output file(s)"
-            echo " -z          The location of the pre-vsearch zip output file(s)"
-            echo " -q          The location of the BLAST output file(s)"
-            echo " -p          The UMI search approach"
+            echo " -z          The location of the pre-vsearch zip output"
+            echo "             file(s)"
+            echo " -q          The location of the blast output file(s)"
+            echo " -p          The umi search approach"
             echo "             [primer/scaffold(adapter)/zero]"
             echo " -f          The format of the input file(s) [fasta/fastq]"
             echo " -l          The length of the UMI sequences"
-            echo " -s          Search UMIs at 5'-end [umi5], 3'-end [umi3] or"
+            echo " -s          Search umis at 5'-end [umi5], 3'-end [umi3] or"
             echo "             at 5'-end and 3'-end [umidouble]"
             echo " -a          The 5'-end search nucleotides"
             echo " -b          The 3'-end search nucleotides"
             echo " -d          The identity percentage with which to perform"
-            echo "             the final VSEARCH check"
+            echo "             the final vsearch check"
             echo " -u          The minimum abundance a read has to be order to"
-            echo "             be part of the final VSEARCH check present in"
+            echo "             be part of the final vsearch check present in"
             echo ""
-            echo "Use a python script to accumulate all UMIs and output a"
-            echo "tabular file, a BLAST file and a zip file. The tabular file"
+            echo "Use a python script to accumulate all umis and output a"
+            echo "tabular file, a blast file and a zip file. The tabular file"
             echo "will contain all unique UMI nucleotides, a count of the"
-            echo "number of reads that are associated with that UMI and a"
-            echo "unique identifier for every UMI."
-            echo "The BLAST file can be used to identify all UMI clusters."
-            echo "The zip file will contain fastA files for every unique UMI"
-            echo "and contain reads associated with that UMI, this zip file"
-            echo "is created before VSEARCH is used for a final check."
+            echo "number of reads that are associated with that umi and a"
+            echo "unique identifier for every umi."
+            echo "The blast file can be used to identify all umi clusters."
+            echo "The zip file will contain fasta files for every unique umi"
+            echo "and contain reads associated with that umi, this zip file"
+            echo "is created before vsearch is used for a final check."
             echo ""
 
             exit
@@ -190,16 +191,16 @@ main
 
 # Additional information:
 # =======================
-# Files in fastA format should always have a .fasta extension.
-# Files in fastQ format should always have a .fastq extension.
-# Every read in a fastA/fastQ file should be on one line. For instance they can
+# Files in fastq format should always have a .fasta extension.
+# Files in fastq format should always have a .fastq extension.
+# Every read in a fasta/fastq file should be on one line. For instance they can
 # not be "human readable" and have a \n after every 80 characters.
 # Prequisites:
 # - sudo apt-get install python3
 # - sudo apt-get install python3-pip
 # - sudo pip3 install pandas
 # - sudo apt-get install libargtable2-dev
-# - Download VSEARCH from GitHub
+# - Download vsearch from GitHub
 # - Unpack downloaded file
 # - sudo ./autogen.sh
 # - sudo ./configure && sudo make && sudo make install

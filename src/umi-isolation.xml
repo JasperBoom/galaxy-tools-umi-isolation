@@ -18,10 +18,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 Contact information: info@jboom.org.
 -->
 <?xml version="1.0" encoding="utf-8"?>
-<tool id="umi-isolation" name="Cluster On UMIs" version="0.1.0">
+<tool id="umi-isolation" name="Cluster on umis" version="0.1.0">
     <description>
-        Use a python script to cluster all UMIs and output a tabular file, a
-        BLAST file and a zip file.
+        Use a python script to cluster all umis and output a tabular file, a
+        blast file and a zip file.
     </description>
     <requirements>
         <requirement type="package" version="3.6.8">python</requirement>
@@ -53,18 +53,18 @@ Contact information: info@jboom.org.
     <inputs>
         <!-- Catch the input file. -->
         <conditional name="input">
-            <param name="single" type="select" label="FastQ or fastA file."
+            <param name="single" type="select" label="Fastq or fasta file."
                    multiple="false">
                 <option value="fastq" selected="true">FastQ file</option>
                 <option value="fasta">FastA file</option>
             </param>
             <when value="fastq">
                 <param name="single_fastq" type="data" format="fastq"
-                       label="FastQ file."/>
+                       label="Fastq file."/>
             </when>
             <when value="fasta">
                 <param name="single_fasta" type="data" format="fasta"
-                       label="FastA file."/>
+                       label="Fasta file."/>
             </when>
         </conditional>
         <!-- Catch the search approach. -->
@@ -76,11 +76,11 @@ Contact information: info@jboom.org.
             <option value="scaffold">Scaffold(adapter) search</option>
             <option value="zero">First position search</option>
         </param>
-        <!-- Catch the number of UMIs per read. -->
+        <!-- Catch the number of umis per read. -->
         <param name="search_method" type="select"
-               label="Search UMIs at 5'-end [umi5], 3'-end [umi3] or at 5'-end and 3'-end [umidouble]"
+               label="Search umis at 5'-end [umi5], 3'-end [umi3] or at 5'-end and 3'-end [umidouble]"
                multiple="false"
-               help="Searching with umi5 instructs the tool to only search for UMI's at the start of every read, searching with umi3 instructs the tool to only search for UMI's at the end of every read, while umidouble will instruct the tool to collect UMI's on both the start and end of every read">
+               help="Searching with umi5 instructs the tool to only search for umis at the start of every read, searching with umi3 instructs the tool to only search for umis at the end of every read, while umidouble will instruct the tool to collect umis on both the start and end of every read">
             <option value="umi5" selected="true">5'-end UMI</option>
             <option value="umi3">3'-end UMI</option>
             <option value="umidouble">Two end UMIs</option>
@@ -91,11 +91,11 @@ Contact information: info@jboom.org.
         <param name="reverse" size="50" type="text" value="NNNNNNNNNNNNNNN"
                label="The 3'-end search nucleotides (UPPERCASE)"/>
         <param name="umi_length" type="integer"
-               label="The length of the UMI sequences (INTEGER)" value="0" min="0"
-               help="Enter a integer that represents the length of a single UMI"/>
+               label="The length of the umi sequences (INTEGER)" value="0" min="0"
+               help="Enter a integer that represents the length of a single umi"/>
         <param name="abundance_score" type="integer" label="The minimum abundance with which a read needs to be present in order to not be discarded" value="1" min="1" />
         <param name="identity_score" type="float" value="0.97" min="0.1" max="1"
-               label="The identity percentage with which VSEARCH will cluster isolated reads within a single UMI fasta file"/>
+               label="The identity percentage with which vsearch will cluster isolated reads within a single umi fasta file"/>
     </inputs>
     <outputs>
         <!-- Catch the output file. -->
@@ -112,31 +112,32 @@ Contact information: info@jboom.org.
     <help>
         .. class:: infomark
 
-        Use a python script to accumulate all UMIs and output a tabular file,
-        a BLAST file and a zip file.
+        Use a python script to accumulate all umis and output a tabular file,
+        a blast file and a zip file.
 
         .. class:: infomark
 
-        The tabular file will contain all unique UMI nucleotides, a count of
+        The tabular file will contain all unique umi nucleotides, a count of
         the number of reads that are associated with that umi and a unique
-        identifier for every UMI.
+        identifier for every umi.
 
         .. class:: infomark
 
-        The BLAST file can be used to identify all UMI clusters.
+        The blast file can be used to identify all umi clusters.
 
         .. class:: infomark
 
-        The zip file will contain fastA files for every unique UMI and contain
-        reads associated with that UMI, this zip file is created before VSEARCH
+        The zip file will contain fasta files for every unique umi and contain
+        reads associated with that umi, this zip file is created before vsearch
         is used for a final check.
 
         .. class:: warningmark
 
-        Every read in a fastA file should have a header starting with >.
-        Every read in a fastQ file should have a header starting with @.
-        Every read in a fastA/fastQ file should be on one line. For instance
-        they can not be "human readable" and have a "\\n" after every 80 characters.
+        Every read in a fasta file should have a header starting with >.
+        Every read in a fastq file should have a header starting with @.
+        Every read in a fasta/fastq file should be on one line. For instance
+        they can not be "human readable" and have a "\\n" after every 80
+        characters.
         
     </help>
 </tool>
